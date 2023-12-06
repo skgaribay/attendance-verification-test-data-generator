@@ -1,0 +1,15 @@
+{
+    "email": "sean.test@offshorly.com",
+    "password": "seanKnit1!",
+    "employeeID": 7,
+    "schedIn": "08:00:00",
+    "schedOut": "17:00:00",
+    "schedBill": 28800,
+    "attDate": "2023-12-05",
+    "breakDur": 3600,
+    "timeInVars": ["07:36:00", "08:00:00", "08:22:00"],
+    "timeOutVars": ["16:20:00", "16:36:00", "17:00:00", "17:22:00", "17:51:00"],
+    "breakStartVars": ["none"],
+    "breakEndVars": [],
+    "isBreakBillable": false
+}
