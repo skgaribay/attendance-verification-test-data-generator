@@ -1,15 +1,21 @@
 {
+    "dataFileName": "fixedUnbillableBreak.csv",
     "email": "sean.test@offshorly.com",
     "password": "seanKnit1!",
     "employeeID": 7,
+    "attDate": "2023-12-05",
+
     "schedIn": "08:00:00",
     "schedOut": "17:00:00",
-    "schedBill": 28800,
-    "attDate": "2023-12-05",
-    "breakDur": 3600,
     "timeInVars": ["07:36:00", "08:00:00", "08:22:00"],
     "timeOutVars": ["16:20:00", "16:36:00", "17:00:00", "17:22:00", "17:51:00"],
-    "breakStartVars": ["none"],
-    "breakEndVars": [],
-    "isBreakBillable": false
+    "schedBill": 28800,
+
+    "breakDur": 3600,
+    "breakStartVars": ["11:12:00", "11:30:00", "11:49:00"],
+    "breakEndVars": ["12:12:00", "12:30:00", "12:49:00"],
+    "isBreakBillable": false,
+
+    "withOvertime": false,
+    "otRange": []
 }
