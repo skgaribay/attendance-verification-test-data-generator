@@ -18,6 +18,7 @@ timeInVars = data['timeInVars']
 timeOutVars = data['timeOutVars']
 schedBill = data['schedBill']
 
+breakId = data['breakId']
 breakDur = data['breakDur']
 breakStartVars = data['breakStartVars']
 breakEndVars = data['breakEndVars']
@@ -30,7 +31,7 @@ otRange = data['otRange']
 count = 1
 
 def main():
-    fields = ['testID', 'employeeID', 'attDate', 'timeIn', 'timeOut', 'breakStart', 'breakEnd', 'billable', 'late', 'undertime', 'deficit', 'excess', 'overtime']
+    fields = ['testID', 'employeeId', 'attDate', 'timeIn', 'timeOut', 'breakId', 'breakStart', 'breakEnd', 'billable', 'late', 'undertime', 'deficit', 'excess', 'overtime']
     
     with open(dataFileName, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -53,7 +54,7 @@ def noBreak(csvwriter):
                 
             lateVal = getLate(schedIn, i)
             utVal = getUndertime(schedOut, j)
-            row = [count, employeeID, attDate, i, j, '-', '-', getBillable(i, j, schedIn, schedOut, schedBill, 0, 0, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, 0, 0), getExcess(i, j, schedIn, schedOut, schedBill, 0, 0, isBreakBillable), otVal]
+            row = [count, employeeID, attDate, i, j, breakId, '-', '-', getBillable(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, 0, 0), getExcess(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable), otVal]
             csvwriter.writerow(row)
             count += 1
             
@@ -71,7 +72,7 @@ def wBreak(csvwriter):
                     lateVal = getLate(schedIn, i)
                     utVal = getUndertime(schedOut, j)
                     actualBreakDuration = getDuration(k, l)
-                    row = [count, employeeID, attDate, i, j, k, l, getBillable(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, actualBreakDuration, breakDur), getExcess(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), otVal]
+                    row = [count, employeeID, attDate, i, j, breakId, k, l, getBillable(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, actualBreakDuration, breakDur), getExcess(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), otVal]
                     csvwriter.writerow(row)
                     count += 1
               
