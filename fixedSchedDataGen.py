@@ -12,6 +12,7 @@ password = data['password']
 employeeID = data['employeeID']
 attDate = data['attDate']
 
+schedType = data['schedType']
 schedIn = data['schedIn']
 schedOut = data['schedOut']
 timeInVars = data['timeInVars']
@@ -47,14 +48,30 @@ def noBreak(csvwriter):
     global count
     for i in timeInVars:
         for j in timeOutVars:
+            late = getLate(schedIn, i)
+            undertime = getUndertime(schedOut, j)
+            deficit = getDeficit(late, undertime, 0, 0)
+            excess = getExcess(i, j, schedIn, schedOut)
+            
             if withOvertime: 
-                otVal = getOvertime()
+                overtime= getOvertime() #WIP
             else:
-                otVal = 0
+                overtime= 0
                 
-            lateVal = getLate(schedIn, i)
-            utVal = getUndertime(schedOut, j)
-            row = [count, employeeID, attDate, i, j, breakId, '-', '-', getBillable(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, 0, 0), getExcess(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable), otVal]
+            match schedType:
+                case 'fixed':
+                    billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable)
+                    
+                case 'full flexible':
+                    billable = getBillableFullFlex() #WIP
+                    
+                case 'set flexible':
+                    billable = getBillableSetFlex() #WIP
+                    
+                case _ :
+                    billable = 0
+                
+            row = [count, employeeID, attDate, i, j, breakId, '-', '-', billable, late, undertime, deficit, excess, overtime]
             csvwriter.writerow(row)
             count += 1
             
@@ -64,15 +81,31 @@ def wBreak(csvwriter):
         for j in timeOutVars:
             for k in breakStartVars:
                 for l in breakEndVars:
-                    if withOvertime: 
-                        otVal = getOvertime()
-                    else:
-                        otVal = 0
-                        
-                    lateVal = getLate(schedIn, i)
-                    utVal = getUndertime(schedOut, j)
+                    late = getLate(schedIn, i)
+                    undertime = getUndertime(schedOut, j)
                     actualBreakDuration = getDuration(k, l)
-                    row = [count, employeeID, attDate, i, j, breakId, k, l, getBillable(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), lateVal, utVal, getDeficit(lateVal, utVal, actualBreakDuration, breakDur), getExcess(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable), otVal]
+                    deficit = getDeficit(late, undertime, actualBreakDuration, breakDur)
+                    excess = getExcess(i, j, schedIn, schedOut)
+                    
+                    if withOvertime: 
+                        overtime= getOvertime() #WIP
+                    else:
+                        overtime= 0
+                        
+                    match schedType:
+                        case 'fixed':
+                            billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable)
+                            
+                        case 'full flexible':
+                            billable = getBillableFullFlex() #WIP
+                            
+                        case 'set flexible':
+                            billable = getBillableSetFlex() #WIP
+                            
+                        case _ :
+                            billable = 0
+                        
+                    row = [count, employeeID, attDate, i, j, breakId, k, l, billable, late, undertime, deficit, excess, overtime]
                     csvwriter.writerow(row)
                     count += 1
               

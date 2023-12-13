@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
     
-def getBillable(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str, str, str, str, seconds, seconds, seconds, boolean
+def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
     actualIn_time = datetime.strptime(actualIn, '%H:%M:%S')
     actualOut_time = datetime.strptime(actualOut, '%H:%M:%S')
     scheduleIn_time = datetime.strptime(scheduleIn, '%H:%M:%S')
@@ -15,12 +15,20 @@ def getBillable(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actua
     
     return int(min(workHours, setBillable))
 
-def getDuration(start, end): #str, str
+def getBillableFullFlex(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
+    #do something
+    return 0
+
+def getBillableSetFlex(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
+    #do something
+    return 0
+
+def getDuration(start, end): #str (time), str (time)
     start_time = datetime.strptime(start, '%H:%M:%S')
     end_time = datetime.strptime(end, '%H:%M:%S')
     return (end_time - start_time).total_seconds()
     
-def getLate(timeIn, actualIn): #str, str
+def getLate(timeIn, actualIn): #str (time), str (time)
     timeIn_time = datetime.strptime(timeIn, '%H:%M:%S')
     actualIn_time = datetime.strptime(actualIn, '%H:%M:%S')
     
@@ -29,7 +37,7 @@ def getLate(timeIn, actualIn): #str, str
     else:
         return 0
     
-def getUndertime(timeOut, actualOut):  #str, str
+def getUndertime(timeOut, actualOut):  #str (time), str (time)
     actualOut_time = datetime.strptime(actualOut, '%H:%M:%S')
     timeOut_time = datetime.strptime(timeOut, '%H:%M:%S')
     
@@ -44,7 +52,7 @@ def getDeficit(late, undertime, actualBreakDur, schedBreakDur): #seconds, second
         
     return deficit
     
-def getExcess(actualIn, actualOut, schedIn, schedOut, schedBillable, actualBreakDur, schedBreakDur, isBreakBillable): #str, str, str, str, seconds, seconds, seconds, boolean
+def getExcess(actualIn, actualOut, schedIn, schedOut): #str (time), str (time), str (time), str (time)
     actualIn_time = datetime.strptime(actualIn, '%H:%M:%S')
     actualOut_time = datetime.strptime(actualOut, '%H:%M:%S')
     schedIn_time = datetime.strptime(schedIn, '%H:%M:%S')
@@ -52,25 +60,10 @@ def getExcess(actualIn, actualOut, schedIn, schedOut, schedBillable, actualBreak
     
     excess = max(0, (schedIn_time - actualIn_time).total_seconds()) + max(0, (actualOut_time - schedOut_time).total_seconds())
     
-    if (not isBreakBillable) and (schedBreakDur > actualBreakDur):
-        totalWorkHours = (min(actualOut_time, schedOut_time) - max(actualIn_time, schedIn_time)).total_seconds()
-        excess = excess + max(0, (totalWorkHours - schedBillable) - actualBreakDur)
-    
     return excess
 
-def getOvertime(timeIn, timeOut, actualIn, actualOut): #in progress
+def getOvertime(timeIn, timeOut, actualIn, actualOut): #WIP
     timeInObj = datetime.strptime(timeIn, '%H:%M:%S')
     timeOutObj = datetime.strptime(timeOut, '%H:%M:%S')
     #calculations
-    return 0
-    
-#Methods below for calculations concerning schedules with unbillable breaks
-#WIP
-def getBillable_Break():
-    return 0
-    
-def getDeficit_Break():
-    return 0
-    
-def getExcess_Break():
     return 0
