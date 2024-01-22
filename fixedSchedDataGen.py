@@ -7,8 +7,6 @@ jsonFile.close()
 
 #Variables from config file--
 dataFileName = data['dataFileName']
-email = data['email']
-password = data['password']
 employeeID = data['employeeID']
 attDate = data['attDate']
 
@@ -34,7 +32,7 @@ count = 1
 def main():
     fields = ['testID', 'employeeId', 'attDate', 'timeIn', 'timeOut', 'breakId', 'breakStart', 'breakEnd', 'billable', 'late', 'undertime', 'deficit', 'excess', 'overtime']
     
-    with open(dataFileName, 'w', newline='', encoding='utf-8') as csvfile:
+    with open('testData/' + dataFileName, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(fields)
         

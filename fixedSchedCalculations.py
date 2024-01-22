@@ -9,18 +9,18 @@ def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, 
     workHours = (min(actualOut_time, scheduleOut_time) - max(actualIn_time, scheduleIn_time)).total_seconds()
     
     if isBreakBillable:
-        workHours = workHours - min(0, (actualBreakDuration - scheduleBreakDuration))
+        workHours = workHours - max(0, (actualBreakDuration - scheduleBreakDuration))
     else:
         workHours = workHours - actualBreakDuration
     
     return int(min(workHours, setBillable))
 
 def getBillableFullFlex(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
-    #do something
+    #schedule type WIP
     return 0
 
 def getBillableSetFlex(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
-    #do something
+    #schedule type WIP
     return 0
 
 def getDuration(start, end): #str (time), str (time)
@@ -47,8 +47,7 @@ def getUndertime(timeOut, actualOut):  #str (time), str (time)
         return 0
     
 def getDeficit(late, undertime, actualBreakDur, schedBreakDur): #seconds, seconds, seconds, seconds
-    #if actualBreakDur > schedBreakDur, deficit
-    deficit = late + undertime + max(0, (schedBreakDur - actualBreakDur))
+    deficit = late + undertime + max(0, (actualBreakDur - schedBreakDur))
         
     return deficit
     
