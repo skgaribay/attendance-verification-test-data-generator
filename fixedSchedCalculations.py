@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta
+
+#the following functions calculate the expected values given the schedule params and variable time and break logs
+#arguments come as strings so date conversion happens here also
     
 def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
     actualIn_time = datetime.strptime(actualIn, '%H:%M:%S')
@@ -48,7 +51,8 @@ def getUndertime(timeOut, actualOut):  #str (time), str (time)
     
 def getDeficit(late, undertime, actualBreakDur, schedBreakDur): #seconds, seconds, seconds, seconds
     deficit = late + undertime + max(0, (actualBreakDur - schedBreakDur))
-        
+    print((actualBreakDur - schedBreakDur))
+    print(deficit)
     return deficit
     
 def getExcess(actualIn, actualOut, schedIn, schedOut): #str (time), str (time), str (time), str (time)

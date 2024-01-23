@@ -32,6 +32,7 @@ count = 1
 def main():
     fields = ['testID', 'employeeId', 'attDate', 'timeIn', 'timeOut', 'breakId', 'breakStart', 'breakEnd', 'billable', 'late', 'undertime', 'deficit', 'excess', 'overtime']
     
+    #handle file, create writer
     with open('testData/' + dataFileName, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(fields)
@@ -41,11 +42,13 @@ def main():
             noBreak(csvwriter)
         else:
             wBreak(csvwriter)
-    
+   
+#generate test date for no break scenarios    
 def noBreak(csvwriter):
     global count
     for i in timeInVars:
         for j in timeOutVars:
+            #get calculations
             late = getLate(schedIn, i)
             undertime = getUndertime(schedOut, j)
             deficit = getDeficit(late, undertime, 0, 0)
@@ -55,7 +58,8 @@ def noBreak(csvwriter):
                 overtime= getOvertime() #WIP
             else:
                 overtime= 0
-                
+            
+            #billable hours calculation differ with schedule type, although flex is still unavailable        
             match schedType:
                 case 'fixed':
                     billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable)
@@ -68,17 +72,20 @@ def noBreak(csvwriter):
                     
                 case _ :
                     billable = 0
-                
+            
+            #write to csv file     
             row = [count, employeeID, attDate, i, j, breakId, '-', '-', billable, late, undertime, deficit, excess, overtime]
             csvwriter.writerow(row)
             count += 1
-            
+       
+#generate test date for no break scenarios               
 def wBreak(csvwriter):
     global count
     for i in timeInVars:
         for j in timeOutVars:
             for k in breakStartVars:
                 for l in breakEndVars:
+                    #get calculations
                     late = getLate(schedIn, i)
                     undertime = getUndertime(schedOut, j)
                     actualBreakDuration = getDuration(k, l)
@@ -89,7 +96,8 @@ def wBreak(csvwriter):
                         overtime= getOvertime() #WIP
                     else:
                         overtime= 0
-                        
+                    
+                    #billable hours calculation differ with schedule type, although flex is still unavailable    
                     match schedType:
                         case 'fixed':
                             billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable)
@@ -102,7 +110,8 @@ def wBreak(csvwriter):
                             
                         case _ :
                             billable = 0
-                        
+                    
+                    #write to csv file    
                     row = [count, employeeID, attDate, i, j, breakId, k, l, billable, late, undertime, deficit, excess, overtime]
                     csvwriter.writerow(row)
                     count += 1
