@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 #the following functions calculate the expected values given the schedule params and variable time and break logs
 #arguments come as strings so date conversion happens here also
     
-def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
+def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable, overbreak): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean, int
     actualIn_time = datetime.strptime(actualIn, '%H:%M:%S')
     actualOut_time = datetime.strptime(actualOut, '%H:%M:%S')
     scheduleIn_time = datetime.strptime(scheduleIn, '%H:%M:%S')
@@ -14,9 +14,19 @@ def getBillableFixed(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, 
     if isBreakBillable:
         workHours = workHours - max(0, (actualBreakDuration - scheduleBreakDuration))
     else:
-        workHours = workHours - actualBreakDuration
+        workHours = workHours - scheduleBreakDuration - overbreak
     
     return int(min(workHours, setBillable))
+
+def getOverbreak(schedBreak, schedBreakDuration, breakStart, breakEnd): #str (time), int, str (time), str (time)
+    schedBreakStart_time = datetime.strptime(schedBreak, '%H:%M:%S')
+    schedBreakEnd_time = schedBreakStart_time + timedelta(seconds=schedBreakDuration)
+    breakStart_time = datetime.strptime(breakStart, '%H:%M:%S')
+    breakEnd_time = datetime.strptime(breakEnd, '%H:%M:%S')
+    
+    overbreak = max((schedBreakStart_time - breakStart_time).total_seconds(), 0) + max((breakEnd_time - schedBreakEnd_time).total_seconds(), 0)
+    
+    return overbreak
 
 def getBillableFullFlex(actualIn, actualOut, scheduleIn, scheduleOut, setBillable, actualBreakDuration, scheduleBreakDuration, isBreakBillable): #str (time), str (time), str (time), str (time), seconds, seconds, seconds, boolean
     #schedule type WIP
@@ -49,10 +59,10 @@ def getUndertime(timeOut, actualOut):  #str (time), str (time)
     else:
         return 0
     
-def getDeficit(late, undertime, actualBreakDur, schedBreakDur): #seconds, seconds, seconds, seconds
-    deficit = late + undertime + max(0, (actualBreakDur - schedBreakDur))
-    print((actualBreakDur - schedBreakDur))
-    print(deficit)
+def getDeficit(late, undertime, overbreak): #seconds, seconds, seconds, seconds
+    deficit = late + undertime + overbreak
+    #print((actualBreakDur - schedBreakDur))
+    #print(deficit)
     return deficit
     
 def getExcess(actualIn, actualOut, schedIn, schedOut): #str (time), str (time), str (time), str (time)

@@ -18,6 +18,7 @@ timeOutVars = data['timeOutVars']
 schedBill = data['schedBill']
 
 breakId = data['breakId']
+schedBreak = data['schedBreak']
 breakDur = data['breakDur']
 breakStartVars = data['breakStartVars']
 breakEndVars = data['breakEndVars']
@@ -42,6 +43,8 @@ def main():
             noBreak(csvwriter)
         else:
             wBreak(csvwriter)
+            
+    print(f"Test Data Generated: {dataFileName}")
    
 #generate test date for no break scenarios    
 def noBreak(csvwriter):
@@ -51,7 +54,7 @@ def noBreak(csvwriter):
             #get calculations
             late = getLate(schedIn, i)
             undertime = getUndertime(schedOut, j)
-            deficit = getDeficit(late, undertime, 0, 0)
+            deficit = getDeficit(late, undertime, 0)
             excess = getExcess(i, j, schedIn, schedOut)
             
             if withOvertime: 
@@ -62,7 +65,7 @@ def noBreak(csvwriter):
             #billable hours calculation differ with schedule type, although flex is still unavailable        
             match schedType:
                 case 'fixed':
-                    billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable)
+                    billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, 0, breakDur, isBreakBillable, 0)
                     
                 case 'full flexible':
                     billable = getBillableFullFlex() #WIP
@@ -89,7 +92,8 @@ def wBreak(csvwriter):
                     late = getLate(schedIn, i)
                     undertime = getUndertime(schedOut, j)
                     actualBreakDuration = getDuration(k, l)
-                    deficit = getDeficit(late, undertime, actualBreakDuration, breakDur)
+                    overbreak = getOverbreak(schedBreak, breakDur, k, l) #schedBreak, schedBreakDuration, breakStart, breakEnd
+                    deficit = getDeficit(late, undertime, overbreak)
                     excess = getExcess(i, j, schedIn, schedOut)
                     
                     if withOvertime: 
@@ -100,7 +104,7 @@ def wBreak(csvwriter):
                     #billable hours calculation differ with schedule type, although flex is still unavailable    
                     match schedType:
                         case 'fixed':
-                            billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable)
+                            billable = getBillableFixed(i, j, schedIn, schedOut, schedBill, actualBreakDuration, breakDur, isBreakBillable, overbreak)
                             
                         case 'full flexible':
                             billable = getBillableFullFlex() #WIP
